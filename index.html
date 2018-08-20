@@ -1,0 +1,63 @@
+<!doctype html>
+<meta charset=utf-8>
+<body>
+  <style>
+  * { box-sizing: border-box }
+  #map { width: 960px; }
+  .square { width: 15px; height: 15px; float: left; border: 1px solid; }
+  #res { width: 960px; height: 100px }
+  </style>
+
+  <div id=map></div>
+
+  <script>
+    const size = 16
+    let tab = [];
+    let content = '';
+    let mousedown = false;
+
+    for (i = 0; i < size; i++) {
+      tab[i] = [];
+      for (j = 0; j < size*4; j++){
+        content += '<div class=square id=map'+i+'_'+j+' \
+          onmousedown=toggle('+i+','+j+',this,false) \
+          onmouseover=toggle('+i+','+j+',this,true) '
+        + ((i%(size) == 0||j%(size) == 0||i%(size) == size-1||j%(size) == size-1) ?
+              "style=background:#aaa" : "style=background:#eee")
+        + '></div>';
+      }
+    }
+    map.innerHTML = content;
+
+    onmousedown=e=>{mousedown = true;}
+    onmouseup=e=>{mousedown = false;}
+
+    toggle = (line, column, current, isMouseOver) => {
+      if (isMouseOver && !mousedown) return
+
+      if(ladder.checked) {
+        tab[line][column] = "ladder"
+        current.style.background = "#0e0"
+      } else if(bumper.checked) {
+        tab[line][column] = "bumper"
+        current.style.background = "#00e"
+      } else if(spike.checked) {
+        tab[line][column] = "spike"
+        current.style.background = "#e00"
+      } else {
+        tab[line][column] = "floor"
+        current.style.background = "#000"
+      }
+    }
+  </script>
+
+  <br style=clear:both>
+  <p>Object:
+    <input type=radio name=element value=floor checked id=floor> floor
+    <input type=radio name=element value=ladder id=ladder> ladder
+    <input type=radio name=element value=bumper id=bumper> bumper
+    <input type=radio name=element value=spike id=spike> spike
+  </p>
+  <p><button id=gen>GENERATE</button></p>
+  <p><textarea id=res></textarea></p>
+</body>
