@@ -5,10 +5,19 @@
   * { box-sizing: border-box }
   #map { width: 960px; }
   .square { width: 15px; height: 15px; float: left; border: 1px solid; }
-  #res { width: 960px; height: 100px }
+  #plan { width: 960px; height: 300px }
   </style>
 
   <div id=map></div>
+  <br style=clear:both>
+  <p>Object:
+    <input type=radio name=element value=floor checked id=floor> floor
+    <input type=radio name=element value=ladder id=ladder> ladder
+    <input type=radio name=element value=bumper id=bumper> bumper
+    <input type=radio name=element value=spike id=spike> spike
+  </p>
+  <p><button id=gen>GENERATE</button></p>
+  <p><textarea id=plan></textarea></p>
 
   <script>
     const size = 16
@@ -49,15 +58,21 @@
         current.style.background = "#000"
       }
     }
-  </script>
 
-  <br style=clear:both>
-  <p>Object:
-    <input type=radio name=element value=floor checked id=floor> floor
-    <input type=radio name=element value=ladder id=ladder> ladder
-    <input type=radio name=element value=bumper id=bumper> bumper
-    <input type=radio name=element value=spike id=spike> spike
-  </p>
-  <p><button id=gen>GENERATE</button></p>
-  <p><textarea id=res></textarea></p>
+    gen.onclick = () => {
+      var res = ""
+      for (i = 0; i < size; i++) {
+        for (j = 0; j < size * 4; j++) {
+          if (tab[i][j] == "ladder") res += "="
+          else if (tab[i][j] == "bumper") res += "o"
+          else if (tab[i][j] == "spike") res += "^"
+          else if (tab[i][j] == "floor") res += "-"
+          else res += " "
+        }
+        res += '\n'
+      }
+
+      plan.value = res
+    }
+  </script>
 </body>
