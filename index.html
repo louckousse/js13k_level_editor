@@ -2,14 +2,14 @@
 <meta charset=utf-8>
 <body>
   <style>
-  * { box-sizing: border-box }
-  #map { width: 960px; }
-  .square { width: 15px; height: 15px; float: left; border: 1px solid; }
-  .limit_right  { border-right: 2px solid; }
-  .limit_left   { border-left: 2px solid; }
-  .limit_bottom { border-bottom: 2px solid; }
-  .limit_top    { border-top: 2px solid; }
-  #plan { width: 960px; height: 300px }
+    *             { box-sizing: border-box }
+    #map          { width: 960px; }
+    .square       { width: 15px; height: 15px; float: left; border: 1px solid; }
+    .limit_right  { border-right: 2px solid; }
+    .limit_left   { border-left: 2px solid; }
+    .limit_bottom { border-bottom: 2px solid; }
+    .limit_top    { border-top: 2px solid; }
+    #plan         { width: 960px; height: 300px }
   </style>
 
   <div id=map></div>
@@ -17,6 +17,7 @@
   <p>Object:
     <input type=radio name=element value=floor checked id=floor> floor
     <input type=radio name=element value=spike id=spike> spike
+    <input type=radio name=element value=clear id=clear> clear
   </p>
   <p><button id=gen>GENERATE</button>    <button id=rev>REVERSE</button></p>
   <p><textarea id=plan></textarea></p>
@@ -27,6 +28,9 @@
     let content = '';
     let mousedown = false;
 
+    onmousedown=e=>{mousedown = true;}
+    onmouseup=e=>{mousedown = false;}
+
     for (i = 0; i < size*13; i++) {
       tab[i] = [];
       for (j = 0; j < size*4; j++){
@@ -36,38 +40,45 @@
         if (j%16 == 0)  content += ' limit_left'
         if (j%16 == 15) content += ' limit_right'
         content += '" id=map'+i+'_'+j+' \
-          onmousedown=toggle('+i+','+j+',this,false) \
-          onmouseover=toggle('+i+','+j+',this,true) style=background:#eee></div>';
+          onmousedown=toggle('+i+','+j+',false) \
+          onmouseover=toggle('+i+','+j+',true) style=background:#eee></div>';
       }
     }
+
     map.innerHTML = content;
 
-    onmousedown=e=>{mousedown = true;}
-    onmouseup=e=>{mousedown = false;}
+    remove = (line, column) => {
+      tab[line][column] = ""
+      draw(line, column)
+    }
 
-    toggle = (line, column, current, isMouseOver) => {
+    toggle = (line, column, isMouseOver) => {
       if (isMouseOver && !mousedown) return
 
-      if(spike.checked) {
-        tab[line][column] = "spike"
-        current.style.background = "#e00"
-      } else {
-        tab[line][column] = "floor"
-        current.style.background = "#000"
-      }
+      if (spike.checked) tab[line][column] = "^"
+      else if (floor.checked) tab[line][column] = "-"
+      else tab[line][column] = ""
+      draw(line, column)
     }
 
     gen.onclick = () => {
       var res = ""
       for (i = 0; i < size * 13; i++) {
+        curline = ""
         for (j = 0; j < size * 4; j++) {
-          if (tab[i][j] == "spike") res += "^"
-          else if (tab[i][j] == "floor") res += "-"
-          else res += " "
+          if (tab[i][j] != "^" && tab[i][j] != "-") curline += " "
+          else curline += tab[i][j]
         }
-        res += '\n'
+        curline = curline.replace(/\s*$/,"");
+        res += curline + '\n'
       }
       plan.value = res
+    }
+
+    draw = (i, j) => {
+      if (tab[i][j] == "^") top["map"+i+"_"+j].style.background = "#e00"
+      else if (tab[i][j] == "-") top["map"+i+"_"+j].style.background = "#000"
+      else top["map"+i+"_"+j].style.background = "#eee"
     }
 
     rev.onclick = () => {
@@ -80,14 +91,8 @@
           i++
           j = 0
         } else {
-          if (plan.value[k] == '^') {
-            tab[i][j] = "spike"
-            top["map"+i+"_"+j].style.background = "#e00"
-          }
-          if (plan.value[k] == '-') {
-            tab[i][j] = "floor"
-            top["map"+i+"_"+j].style.background = "#000"
-          }
+          tab[i][j] = plan.value[k]
+          draw(i, j)
           j++
         }
       }
