@@ -18,7 +18,7 @@
     <input type=radio name=element value=floor checked id=floor> floor
     <input type=radio name=element value=spike id=spike> spike
   </p>
-  <p><button id=gen>GENERATE</button></p>
+  <p><button id=gen>GENERATE</button>    <button id=rev>REVERSE</button></p>
   <p><textarea id=plan></textarea></p>
 
   <script>
@@ -61,16 +61,36 @@
       var res = ""
       for (i = 0; i < size * 13; i++) {
         for (j = 0; j < size * 4; j++) {
-          if (tab[i][j] == "ladder") res += "="
-          else if (tab[i][j] == "bumper") res += "o"
-          else if (tab[i][j] == "spike") res += "^"
+          if (tab[i][j] == "spike") res += "^"
           else if (tab[i][j] == "floor") res += "-"
           else res += " "
         }
         res += '\n'
       }
-
       plan.value = res
+    }
+
+    rev.onclick = () => {
+      if (plan.value.length == 0) return
+
+      var i = 0
+      var j = 0
+      for (k = 0; k < plan.value.length; k++) {
+        if (plan.value[k] == '\n') {
+          i++
+          j = 0
+        } else {
+          if (plan.value[k] == '^') {
+            tab[i][j] = "spike"
+            top["map"+i+"_"+j].style.background = "#e00"
+          }
+          if (plan.value[k] == '-') {
+            tab[i][j] = "floor"
+            top["map"+i+"_"+j].style.background = "#000"
+          }
+          j++
+        }
+      }
     }
   </script>
 </body>
