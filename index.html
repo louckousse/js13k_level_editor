@@ -5,6 +5,10 @@
   * { box-sizing: border-box }
   #map { width: 960px; }
   .square { width: 15px; height: 15px; float: left; border: 1px solid; }
+  .limit_right  { border-right: 2px solid; }
+  .limit_left   { border-left: 2px solid; }
+  .limit_bottom { border-bottom: 2px solid; }
+  .limit_top    { border-top: 2px solid; }
   #plan { width: 960px; height: 300px }
   </style>
 
@@ -25,15 +29,17 @@
     let content = '';
     let mousedown = false;
 
-    for (i = 0; i < size; i++) {
+    for (i = 0; i < size*13; i++) {
       tab[i] = [];
       for (j = 0; j < size*4; j++){
-        content += '<div class=square id=map'+i+'_'+j+' \
+        content += '<div class="square'
+        if (i%16 == 0)  content += ' limit_top'
+        if (i%16 == 15) content += ' limit_bottom'
+        if (j%16 == 0)  content += ' limit_left'
+        if (j%16 == 15) content += ' limit_right'
+        content += '" id=map'+i+'_'+j+' \
           onmousedown=toggle('+i+','+j+',this,false) \
-          onmouseover=toggle('+i+','+j+',this,true) '
-        + ((i%(size) == 0||j%(size) == 0||i%(size) == size-1||j%(size) == size-1) ?
-              "style=background:#aaa" : "style=background:#eee")
-        + '></div>';
+          onmouseover=toggle('+i+','+j+',this,true) style=background:#eee></div>';
       }
     }
     map.innerHTML = content;
@@ -61,7 +67,7 @@
 
     gen.onclick = () => {
       var res = ""
-      for (i = 0; i < size; i++) {
+      for (i = 0; i < size * 13; i++) {
         for (j = 0; j < size * 4; j++) {
           if (tab[i][j] == "ladder") res += "="
           else if (tab[i][j] == "bumper") res += "o"
