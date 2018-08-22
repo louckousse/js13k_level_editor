@@ -16,8 +16,6 @@
   <br style=clear:both>
   <p>Object:
     <input type=radio name=element value=floor checked id=floor> floor
-    <input type=radio name=element value=ladder id=ladder> ladder
-    <input type=radio name=element value=bumper id=bumper> bumper
     <input type=radio name=element value=spike id=spike> spike
   </p>
   <p><button id=gen>GENERATE</button></p>
@@ -50,13 +48,7 @@
     toggle = (line, column, current, isMouseOver) => {
       if (isMouseOver && !mousedown) return
 
-      if(ladder.checked) {
-        tab[line][column] = "ladder"
-        current.style.background = "#0e0"
-      } else if(bumper.checked) {
-        tab[line][column] = "bumper"
-        current.style.background = "#00e"
-      } else if(spike.checked) {
+      if(spike.checked) {
         tab[line][column] = "spike"
         current.style.background = "#e00"
       } else {
