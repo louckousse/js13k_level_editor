@@ -24,6 +24,8 @@
 
   <script>
     const size = 16
+    const spikeBlock = "^"
+    const floorBlock = "-"
     let tab = [];
     let content = '';
     let mousedown = false;
@@ -55,8 +57,8 @@
     toggle = (line, column, isMouseOver) => {
       if (isMouseOver && !mousedown) return
 
-      if (spike.checked) tab[line][column] = "^"
-      else if (floor.checked) tab[line][column] = "-"
+      if (spike.checked) tab[line][column] = spikeBlock
+      else if (floor.checked) tab[line][column] = floorBlock
       else tab[line][column] = ""
       draw(line, column)
     }
@@ -66,7 +68,7 @@
       for (i = 0; i < size * 13; i++) {
         curline = ""
         for (j = 0; j < size * 4; j++) {
-          if (tab[i][j] != "^" && tab[i][j] != "-") curline += " "
+          if (tab[i][j] != spikeBlock && tab[i][j] != floorBlock) curline += " "
           else curline += tab[i][j]
         }
         curline = curline.replace(/\s*$/,"");
@@ -76,8 +78,8 @@
     }
 
     draw = (i, j) => {
-      if (tab[i][j] == "^") top["map"+i+"_"+j].style.background = "#e00"
-      else if (tab[i][j] == "-") top["map"+i+"_"+j].style.background = "#000"
+      if (tab[i][j] == spikeBlock) top["map"+i+"_"+j].style.background = "#e00"
+      else if (tab[i][j] == floorBlock) top["map"+i+"_"+j].style.background = "#000"
       else top["map"+i+"_"+j].style.background = "#eee"
     }
 
