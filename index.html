@@ -17,7 +17,6 @@
   <p>Object:
     <input type=radio name=element value=floor checked id=floor> floor
     <input type=radio name=element value=spike id=spike> spike
-    <input type=radio name=element value=clear id=clear> clear
   </p>
   <p><button id=gen>GENERATE</button>    <button id=rev>REVERSE</button></p>
   <p><textarea id=plan></textarea></p>
@@ -26,40 +25,47 @@
     const size = 16
     const spikeBlock = "^"
     const floorBlock = "-"
-    let tab = [];
-    let content = '';
-    let mousedown = false;
+    const empty = ""
+    let tab = []
+    let content = ''
+    let mousedown = false
+    let mousebutton = 0
 
-    onmousedown=e=>{mousedown = true;}
-    onmouseup=e=>{mousedown = false;}
+    onmousedown=e=>{mousedown = true; mousebutton = e.button;}
+    onmouseup=e=>{mousedown = false; mousebutton = 0;}
+    onkeypress=e=>{changeElement(e);}
 
     for (i = 0; i < size*13; i++) {
       tab[i] = [];
       for (j = 0; j < size*4; j++){
-        content += '<div class="square'
+        content += '<div oncontextmenu="return false" class="square'
         if (i%16 == 0)  content += ' limit_top'
         if (i%16 == 15) content += ' limit_bottom'
         if (j%16 == 0)  content += ' limit_left'
         if (j%16 == 15) content += ' limit_right'
         content += '" id=map'+i+'_'+j+' \
-          onmousedown=toggle('+i+','+j+',false) \
-          onmouseover=toggle('+i+','+j+',true) style=background:#eee></div>';
+          onmousedown=toggle('+i+','+j+',false,event) \
+          onmouseover=toggle('+i+','+j+',true,event) style=background:#eee></div>';
       }
     }
 
     map.innerHTML = content;
+
+    changeElement = (event) => {
+      if (event.charCode == 49) floor.checked = true
+      if (event.charCode == 50) spike.checked = true
+    }
 
     remove = (line, column) => {
       tab[line][column] = ""
       draw(line, column)
     }
 
-    toggle = (line, column, isMouseOver) => {
+    toggle = (line, column, isMouseOver, ev) => {
       if (isMouseOver && !mousedown) return
-
-      if (spike.checked) tab[line][column] = spikeBlock
+      if (mousebutton == 2 || ev.button == 2) tab[line][column] = empty
+      else if (spike.checked) tab[line][column] = spikeBlock
       else if (floor.checked) tab[line][column] = floorBlock
-      else tab[line][column] = ""
       draw(line, column)
     }
 
