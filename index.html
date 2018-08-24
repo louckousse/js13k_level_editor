@@ -20,7 +20,7 @@
     <input type=radio name=element value=floor checked id=floor> floor
     <input type=radio name=element value=spike id=spike> spike
   </p>
-  <p><button id=gen>GENERATE</button>    <button id=rev>REVERSE</button></p>
+  <p><button id=exp>EXPORT</button> <button id=imp>IMPORT</button></p>
   <p><textarea id=plan></textarea></p>
 
   <script>
@@ -66,7 +66,7 @@
       draw(line, column)
     }
 
-    gen.onclick = () => {
+    exp.onclick = () => {
       var res = ""
       for (i = 0; i < size * 13; i++) {
         curline = ""
@@ -96,7 +96,7 @@
       }
     }
 
-    rev.onclick = () => {
+    imp.onclick = () => {
       if (plan.value.length == 0) return
 
       var i = 0
