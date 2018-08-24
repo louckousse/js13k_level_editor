@@ -56,11 +56,6 @@
       if (event.charCode == 50) spike.checked = true
     }
 
-    remove = (line, column) => {
-      tab[line][column] = ""
-      draw(line, column)
-    }
-
     toggle = (line, column, isMouseOver, ev) => {
       if (isMouseOver && !mousedown) return
       if (mousebutton == 2 || ev.button == 2) tab[line][column] = empty
@@ -74,7 +69,7 @@
       for (i = 0; i < size * 13; i++) {
         curline = ""
         for (j = 0; j < size * 4; j++) {
-          if (tab[i][j] != spikeBlock && tab[i][j] != floorBlock) curline += " "
+          if (!tab[i][j]) curline += " "
           else curline += tab[i][j]
         }
         curline = curline.replace(/\s*$/,"");
@@ -87,6 +82,16 @@
       if (tab[i][j] == spikeBlock) top["map"+i+"_"+j].style.background = "#e00"
       else if (tab[i][j] == floorBlock) top["map"+i+"_"+j].style.background = "#000"
       else top["map"+i+"_"+j].style.background = "#eee"
+      hint(i, j)
+    }
+
+    hint = (i, j) => {
+      if (j > 0 && j < size * 4 - 1) return
+
+      var k = Math.abs(j-(size * 4 - 1))
+      if (!tab[i][k]) {
+        top["map"+i+"_"+k].style.background = tab[i][j] ? "#999" : "#eee"
+      }
     }
 
     rev.onclick = () => {
@@ -97,7 +102,10 @@
       for (k = 0; k < plan.value.length; k++) {
         if (plan.value[k] == '\n') {
           i++
+          tab[i] = []
           j = 0
+        } else if (plan.value[k] == " ") {
+          j++
         } else {
           tab[i][j] = plan.value[k]
           draw(i, j)
